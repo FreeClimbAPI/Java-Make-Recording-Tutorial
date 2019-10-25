@@ -1,7 +1,7 @@
 package main.java.make_a_recording;
 
-import com.vailsys.persephony.webhooks.call.VoiceCallback;
-import com.vailsys.persephony.webhooks.percl.RecordUtteranceActionCallback;
+import com.vailsys.freeclimb.webhooks.call.VoiceCallback;
+import com.vailsys.freeclimb.webhooks.percl.RecordUtteranceActionCallback;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,21 +9,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vailsys.persephony.percl.PerCLScript;
-import com.vailsys.persephony.percl.Say;
-import com.vailsys.persephony.percl.RecordUtterance;
-import com.vailsys.persephony.percl.FinishOnKey;
-import com.vailsys.persephony.percl.Hangup;
-import com.vailsys.persephony.percl.Language;
-import com.vailsys.persephony.percl.Pause;
-import com.vailsys.persephony.api.call.Call;
-import com.vailsys.persephony.api.call.CallStatus;
-import com.vailsys.persephony.api.PersyClient;
-import com.vailsys.persephony.api.PersyException;
+import com.vailsys.freeclimb.percl.PerCLScript;
+import com.vailsys.freeclimb.percl.Say;
+import com.vailsys.freeclimb.percl.RecordUtterance;
+import com.vailsys.freeclimb.percl.FinishOnKey;
+import com.vailsys.freeclimb.percl.Hangup;
+import com.vailsys.freeclimb.percl.Language;
+import com.vailsys.freeclimb.percl.Pause;
+import com.vailsys.freeclimb.api.call.Call;
+import com.vailsys.freeclimb.api.call.CallStatus;
+import com.vailsys.freeclimb.api.FreeClimbClient;
+import com.vailsys.freeclimb.api.FreeClimbException;
 
 @RestController
 public class MakeARecording {
-  private static final String fromNumber = System.getenv("PERSEPHONY_PHONE_NUMBER");
+  private static final String fromNumber = System.getenv("FREE_CLIMB_PHONE_NUMBER");
   private final String recordCallBackUrl = System.getenv("HOST") + "/RecordCallBack";
 
   public static void run() {
@@ -37,11 +37,11 @@ public class MakeARecording {
 
   public static void outDial(String accountId, String authToken, String toNumber, String applicationId) {
     try {
-      // Create PersyClient object
-      PersyClient client = new PersyClient(accountId, authToken);
+      // Create FreeClimbClient object
+      FreeClimbClient client = new FreeClimbClient(accountId, authToken);
 
       Call call = client.calls.create(toNumber, fromNumber, applicationId);
-    } catch (PersyException ex) {
+    } catch (FreeClimbException ex) {
       // Exception throw upon failure
     }
   }
@@ -55,7 +55,7 @@ public class MakeARecording {
     try {
       // Convert JSON into call status call back object
       callStatusCallback = VoiceCallback.createFromJson(body);
-    } catch (PersyException pe) {
+    } catch (FreeClimbException pe) {
       // Do something with the failure to parse the request
       return script.toJson();
     }
@@ -95,7 +95,7 @@ public class MakeARecording {
     // Convert JSON into call status callback object
     try {
       recordUtteranceActionCallBack = RecordUtteranceActionCallback.createFromJson(body);
-    } catch (PersyException pe) {
+    } catch (FreeClimbException pe) {
       // Do something
       return script.toJson();
     }
