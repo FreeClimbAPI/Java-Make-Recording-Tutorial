@@ -28,17 +28,17 @@ public class MakeARecording {
 
   public static void run() {
     String accountId = System.getenv("ACCOUNT_ID");
-    String authToken = System.getenv("AUTH_TOKEN");
+    String apiKey = System.getenv("API_KEY");
     String applicationId = System.getenv("TUTORIAL_APPLICATION_ID");
     String toNumber = System.getenv("TO_PHONE_NUMBER");
 
-    outDial(accountId, authToken, toNumber, applicationId);
+    outDial(accountId, apiKey, toNumber, applicationId);
   }
 
-  public static void outDial(String accountId, String authToken, String toNumber, String applicationId) {
+  public static void outDial(String accountId, String apiKey, String toNumber, String applicationId) {
     try {
       // Create FreeClimbClient object
-      FreeClimbClient client = new FreeClimbClient(accountId, authToken);
+      FreeClimbClient client = new FreeClimbClient(accountId, apiKey);
 
       Call call = client.calls.create(toNumber, fromNumber, applicationId);
     } catch (FreeClimbException ex) {
